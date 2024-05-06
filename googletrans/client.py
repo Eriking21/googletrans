@@ -189,9 +189,19 @@ class Translator:
 
         data = json.loads(resp)
         parsed = json.loads(data[0][2])
+         #Especialized Result in MultiParse
+        try:
+            erim:str = parsed[1][0][0][5]     #if gerneral is absent
+            if erim == None : raise
+        except:
+            try:
+                erim:str = parsed[1][0][1][0] #try gender: male
+                if erim == None : raise
+            except:
+                erim:str = parsed[1][0][0][0] #or use gender: female
         # not sure
         should_spacing = parsed[1][0][0][3]
-        translated_parts = list(map(lambda part: TranslatedPart(part[0], part[1] if len(part) >= 2 else []), parsed[1][0][0][5]))
+        translated_parts = list(map(lambda part: TranslatedPart(part[0], part[1] if len(part) >= 2 else []), erim)
         translated = (' ' if should_spacing else '').join(map(lambda part: part.text, translated_parts))
 
         if src == 'auto':
